@@ -6,19 +6,6 @@ double heat_capacity(double T) {
     return 0.132 + 1.56e-4 * T + 2.64e-7 * T * T;
 }
 
-// Trapezoidal rule integration
-double trapezoidal_rule(double (*func)(double), double a, double b, int n) {
-    double h = (b - a) / n;
-    double sum = 0.5 * (func(a) + func(b));
-    
-    for (int i = 1; i < n; i++) {
-        double x = a + i * h;
-        sum += func(x);
-    }
-    
-    return sum * h;
-}
-
 // Simpson's 1/3 rule integration (requires even number of intervals)
 double simpsons_rule(double (*func)(double), double a, double b, int n) {
     if (n % 2 != 0) {
@@ -90,26 +77,7 @@ int main() {
     // Print heat capacity table
     print_heat_capacity_table(T1, T2, 7);
     
-    // Test different step sizes with trapezoidal rule
-    printf("=== Trapezoidal Rule Results ===\n");
-    printf("Step Size, C\tDelta H, cal\tError (%%)\n");
-    printf("--------------------------------------------\n");
-    
-    int step_sizes[] = {300, 150, 100, 50, 25, 10, 5, 1};
-    int num_steps = sizeof(step_sizes) / sizeof(step_sizes[0]);
-    
-    for (int i = 0; i < num_steps; i++) {
-        double step = step_sizes[i];
-        int n = (int)((T2 - T1) / step);
-        
-        double integral = trapezoidal_rule(heat_capacity, T1, T2, n);
-        double delta_H = mass * integral;
-        double error = percent_error(delta_H, exact_delta_H);
-        
-        printf("%.0f\t\t%.0f\t\t%.3f\n", step, delta_H, error);
-    }
-    
-    // Test Simpson's rule with 6 segments
+    // Test Simpson's rule with different segments
     printf("\n=== Simpson's 1/3 Rule Results ===\n");
     int segments[] = {6, 12, 24, 48};
     int num_segments = sizeof(segments) / sizeof(segments[0]);
